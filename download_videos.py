@@ -102,7 +102,7 @@ def process(video, args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--root_dir', required=True)
+    parser.add_argument('--root_dir', default='data')
     parser.add_argument('--tmp_dir', default='/tmp/HACS')
     parser.add_argument('--dataset', default='all', choices=['all', 'segments', 'missing'])
     parser.add_argument('--shortside', default=256, type=int)
@@ -157,6 +157,17 @@ if __name__ == "__main__":
             class_name = str(line).split('/')[-2]
             download_url = str(line)[2:-3]
             videos.add((download_url, video_name, class_name))
+
+    if os.path.exists('DONE.txt'):
+        print ('exists done vidoes,prossessing')
+        import pickle
+        fr = open('DONE.txt','rb')
+        done = pickle.load(fr)
+        fr.close()
+        videos = videos.symmetric_difference(done)
+        print ('take out replicate videos')
+
+
 
     print('{} videos to download.'.format(len(videos)))
 
