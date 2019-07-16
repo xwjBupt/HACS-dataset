@@ -17,6 +17,8 @@ import csv
 import argparse
 from multiprocessing import Pool
 from functools import partial
+from tqdm import tqdm
+
 
 
 def download_to_tmp(vid, tmp_video):
@@ -159,11 +161,16 @@ if __name__ == "__main__":
             videos.add((download_url, video_name, class_name))
 
     if os.path.exists('DONE.txt'):
-        print ('exists done vidoes,prossessing')
-        import pickle
-        fr = open('DONE.txt','rb')
-        done = pickle.load(fr)
+        print ('exists done videos,prossesing.......')
+
+        fr = open('DONE.txt','r',encoding='gbk')
+        done =set()
+        datas= fr.readlines()
         fr.close()
+        for index,data in tqdm(enumerate(datas)):
+            temp_vid = data.strip().split(',')[0]
+            temp_class = data.strip().split(',')[1]
+            done.add((temp_vid,temp_class))
         videos = videos.symmetric_difference(done)
         print ('take out replicate videos')
 
